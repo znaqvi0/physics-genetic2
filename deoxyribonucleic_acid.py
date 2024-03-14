@@ -48,7 +48,7 @@ def draw_course():
     p.draw.rect(screen, (0, 200, 50), (x0 + field.left_wall * scale,
                                        y0 - field.top_wall * scale, 
                                        (field.right_wall - field.left_wall) * scale,
-                                       field.top_wall * scale))
+                                       (field.top_wall - field.bottom_wall) * scale))
     draw_ball(Ball(field.hole_pos, 0, 0, 0.05, 1, color=(255, 255, 255)))
 
 
