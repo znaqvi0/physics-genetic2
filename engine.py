@@ -1,4 +1,3 @@
-import copy
 import random
 
 import field
@@ -53,12 +52,6 @@ class Ball:
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
         score = -mag(self.pos - field.hole_pos)
-
-        # print("distance: %.2f" % distance_from_target,
-        #       "impact x vel: %.2f" % abs(self.v.x),
-        #       "score: %.2f" % score,
-        #       "launch angle: %.5f" % self.launch_angle)
-
         return score
 
     def friction(self):
@@ -86,7 +79,6 @@ class Ball:
             self.collide_with_wall(field.top_wall_norm, field.wall_randomness())
 
     def update(self):
-        distance = self.pos.x - self.pos0.x
         if mag(self.v) > 0.005 and not self.in_hole():
             self.check_walls()
             self.move()
@@ -94,8 +86,6 @@ class Ball:
         else:
             if not self.done:
                 self.fitness = self.calculate_fitness()
-                # self.range = self.pos.x - self.pos0.x
-                # string = "range: %.5f meters" % self.range
                 string = ""
                 string += str(self.fitness)
                 # string += f"launch angle: %.5f " % self.launch_angle

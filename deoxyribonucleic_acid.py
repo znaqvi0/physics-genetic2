@@ -1,9 +1,7 @@
-import random
-
-import field
-from vectors import *
-import pygame as p
 import sys  # most commonly used to turn the interpreter off (shut down your game)
+
+import pygame as p
+
 from engine import *
 
 p.init()
@@ -54,7 +52,6 @@ def draw_course():
 
 # constants
 pos0 = field.ball_pos0
-# v0 = 1
 r = 0.021335
 m = 0.045
 
@@ -114,6 +111,7 @@ for i in range(initial_population):
 draw_course()
 running = False
 t = 0
+
 while True:
     for event in p.event.get():
         if event.type == p.QUIT:  # this refers to clicking on the "x"-close
@@ -128,18 +126,12 @@ while True:
     if running:
         for i in range(20):  # steps multiple times every frame, originally 2000//80
             for ball in balls:
-                # if ball.spin.z != 0:
-                #     print(ball.spin, ball.t)
                 ball.update()
-            # if balls[0].spin.z != 0:
-            #     print(balls[0].spin.z)
-
             t += dt
 
         for ball in balls:
             draw_ball(ball)
         if all_done(balls):
-            # balls = attack_of_the_clones_gaussian(balls)
             balls = attack_of_the_gaussian_clones(balls)
             # screen.fill((150, 210, 255))  # comment/uncomment to enable/disable trail
             screen.fill(screen_color)
@@ -147,16 +139,12 @@ while True:
             # angle_variation *= 0.9  # 0.92  # 0.95
             # speed_variation *= 0.9
             sigma *= 0.7  # TODO 0.9
-            # p.draw.rect(screen, ground_color, (x0 - WIDTH / 2, y0, WIDTH*2, HEIGHT))
 
-            # p.draw.rect(screen, (0, 0, 0), (x0, y0, 100, 100))
             if best_ball is not None:
                 generation += 1
 
                 draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
                 draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
-                # blit_display_top_left("angle variation: %.5f degrees" % angle_variation, (20, 80))
-                # blit_display_top_left("speed variation: %.5f m/s" % speed_variation, (20, 100))
                 draw_text("sigma: %.5f" % sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))

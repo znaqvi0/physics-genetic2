@@ -7,7 +7,6 @@ height = 6
 hole_pos = Vec(0, 5)  # middle of field
 hole_radius = 0.05
 
-# ball_pos0 = lambda: Vec(0, 0.2)
 ball_pos0 = Vec(0, 0.2)
 
 left_wall = -width/2
