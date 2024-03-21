@@ -18,7 +18,7 @@ screen.fill(screen_color)
 p.display.set_caption('window')
 
 scale = 75  # 200
-origin = x0, y0 = WIDTH / 2, HEIGHT - (field.top_wall - field.bottom_wall) * scale / 2  # This is the new origin
+origin = x0, y0 = WIDTH / 2, HEIGHT - (field.TOP_WALL - field.BOTTOM_WALL) * scale / 2  # This is the new origin
 
 
 def ball_xy(ball):
@@ -43,15 +43,24 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
 
 
 def draw_course():
-    p.draw.rect(screen, (0, 200, 50), (x0 + field.left_wall * scale,
-                                       y0 - field.top_wall * scale, 
-                                       (field.right_wall - field.left_wall) * scale,
-                                       (field.top_wall - field.bottom_wall) * scale))
-    draw_ball(Ball(field.hole_pos, 0, 0, 0.05, 1, color=(255, 255, 255)))
+    p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
+                                       y0 - field.TOP_WALL * scale,
+                                       (field.RIGHT_WALL - field.LEFT_WALL) * scale,
+                                       (field.TOP_WALL - field.BOTTOM_WALL) * scale))
+    draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
+
+    p.draw.rect(screen, (0, 150, 200), (x0 + field.left_moat.left * scale,
+                                      y0 - field.left_moat.top * scale,
+                                      (field.left_moat.right - field.left_moat.left)*scale,
+                                      (field.left_moat.top - field.left_moat.bottom) * scale))
+    p.draw.rect(screen, (0, 150, 200), (x0 + field.right_moat.left * scale,
+                                        y0 - field.right_moat.top * scale,
+                                        (field.right_moat.right - field.right_moat.left) * scale,
+                                        (field.right_moat.top - field.right_moat.bottom) * scale))
 
 
 # constants
-pos0 = field.ball_pos0
+pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
@@ -138,7 +147,7 @@ while True:
             draw_course()
             # angle_variation *= 0.9  # 0.92  # 0.95
             # speed_variation *= 0.9
-            sigma *= 0.7  # TODO 0.9
+            sigma *= 0.9  # TODO 0.9
 
             if best_ball is not None:
                 generation += 1

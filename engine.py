@@ -51,7 +51,7 @@ class Ball:
 
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
-        score = -mag(self.pos - field.hole_pos)
+        score = -mag(self.pos - field.HOLE_POS)
         return score
 
     def friction(self):
@@ -61,7 +61,7 @@ class Ball:
         return self.friction()
 
     def in_hole(self):
-        return mag(self.pos - field.hole_pos) <= (-1.0 / 32) * mag(self.v) + field.hole_radius
+        return mag(self.pos - field.HOLE_POS) <= (-1.0 / 32) * mag(self.v) + field.hole_radius
 
     def collide_with_wall(self, wall_norm, sigma):
         randomized_wall_norm = wall_norm.rotate(random.gauss(0, sigma), degrees=True)
@@ -69,14 +69,19 @@ class Ball:
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
 
     def check_walls(self):
-        if self.pos.x < field.left_wall:
-            self.collide_with_wall(field.left_wall_norm, field.wall_randomness())
-        elif self.pos.x > field.right_wall:
-            self.collide_with_wall(field.right_wall_norm, field.wall_randomness())
-        if self.pos.y < field.bottom_wall:
-            self.collide_with_wall(field.bottom_wall_norm, field.wall_randomness())
-        elif self.pos.y > field.top_wall:
-            self.collide_with_wall(field.top_wall_norm, field.wall_randomness())
+        if self.pos.x < field.LEFT_WALL:
+            self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
+        elif self.pos.x > field.RIGHT_WALL:
+            self.collide_with_wall(field.RIGHT_WALL_NORM, field.WALL_RANDOMNESS())
+        if self.pos.y < field.BOTTOM_WALL:
+            self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
+        elif self.pos.y > field.TOP_WALL:
+            self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
+
+        if field.left_moat.ball_in(self):
+            self.v = Vec()
+        if field.right_moat.ball_in(self):
+            self.v = Vec()
 
     def update(self):
         if mag(self.v) > 0.005 and not self.in_hole():
