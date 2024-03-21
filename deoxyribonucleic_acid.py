@@ -147,7 +147,7 @@ while True:
             draw_course()
             # angle_variation *= 0.9  # 0.92  # 0.95
             # speed_variation *= 0.9
-            sigma *= 0.9  # TODO 0.9
+            sigma *= 0.7  # TODO 0.9
 
             if best_ball is not None:
                 generation += 1
