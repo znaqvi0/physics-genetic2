@@ -51,7 +51,7 @@ def draw_course():
 
     p.draw.rect(screen, (0, 150, 200), (x0 + field.left_moat.left * scale,
                                       y0 - field.left_moat.top * scale,
-                                      (field.left_moat.right - field.left_moat.left)*scale,
+                                      (field.left_moat.right - field.left_moat.left) * scale,
                                       (field.left_moat.top - field.left_moat.bottom) * scale))
     p.draw.rect(screen, (0, 150, 200), (x0 + field.right_moat.left * scale,
                                         y0 - field.right_moat.top * scale,
