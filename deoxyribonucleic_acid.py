@@ -3,6 +3,7 @@ import sys  # most commonly used to turn the interpreter off (shut down your gam
 import pygame as p
 
 from engine import *
+from families import Family
 
 p.init()
 
@@ -78,6 +79,11 @@ generation = 1
 
 best_ball = Ball(Vec(), 0, 0, 1, 1)
 
+num_families = 10
+test_family = Family(population, sigma)
+# families = [test_family]
+families = []
+
 
 def random_ball():
     return Ball(pos0, random.uniform(0, 6), random.uniform(-180, 180), r, m,
@@ -91,16 +97,11 @@ def all_done(balls):
     return True
 
 
-def attack_of_the_clones(landed_balls):
-    landed_balls = sorted(landed_balls, key=lambda x: x.fitness, reverse=True)  # make sure to use x.genetic_score
-    landed_balls = landed_balls[0:population // 10]  # 0:10
-    global best_ball
-    best_ball = landed_balls[0]
-    new_balls = []
-    for ball in landed_balls:
-        for j in range(population // len(landed_balls)):  # copies per ball
-            new_balls.append(ball.varied_copy(angle_variation, speed_variation))
-    return new_balls
+def all_families_done(families):
+    for family in families:
+        if not family.all_done():
+            return False
+    return True
 
 
 def attack_of_the_gaussian_clones(landed_balls):
@@ -119,10 +120,13 @@ def attack_of_the_gaussian_clones(landed_balls):
     return new_balls
 
 
-balls = []
-
-for i in range(initial_population):
-    balls.append(random_ball())
+for i in range(num_families):
+    families.append(Family(population // num_families, 1))
+for family in families:
+    for i in range(initial_population // num_families):
+        family.add(random_ball())
+# for i in range(population):
+#     families[0].add(random_ball())
 draw_course()
 running = False
 t = 0
@@ -140,20 +144,28 @@ while True:
 
     if running:
         for i in range(20):  # steps multiple times every frame, originally 2000//80
-            for ball in balls:
-                ball.update()
+            for family in families:
+                family.update()
             t += dt
 
-        for ball in balls:
-            draw_ball(ball)
-        if all_done(balls):
-            balls = attack_of_the_gaussian_clones(balls)
-            # screen.fill((150, 210, 255))  # comment/uncomment to enable/disable trail
-            screen.fill(screen_color)
-            draw_course()
-            # angle_variation *= 0.9  # 0.92  # 0.95
-            # speed_variation *= 0.9
-            sigma *= 0.8  # TODO 0.9
+        for family in families:
+            for ball in family.balls:
+                draw_ball(ball)
+
+        if all_families_done(families):
+            families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
+
+            if len(families) > 1:
+                if generation % 30 == 0:  # kill off a family every 20 generations
+                    families.remove(families[-1])
+
+            best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
+            sigma *= 0.8  # this will eventually family-dependent, just for display purposes
+            for family in families:
+                family.balls = family.next_gen()
+
+                screen.fill(screen_color)
+                draw_course()
 
             if best_ball is not None:
                 generation += 1
@@ -163,6 +175,7 @@ while True:
                 draw_text("sigma: %.5f" % sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))
+                draw_text("best family score: %.5f" % families[0].fitness, (20, 120))  # check
 
     p.display.flip()
     p.time.Clock().tick(100)  # caps frame rate at 100
