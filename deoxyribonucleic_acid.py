@@ -67,7 +67,9 @@ m = 0.045
 initial_population = 10000
 population = 1000
 
-sigma = 1
+sigma = 1  # TODO check avg distance for 1 and 0.5 at sigma = 0.1
+# 0.5: 0.93 avg dist, 1: 1.01 avg
+# test w/ 1000 varied copies of best ball after convergence, sigma=0.1
 
 angle_variation = 2
 speed_variation = 0.5
@@ -107,7 +109,7 @@ def attack_of_the_gaussian_clones(landed_balls):
     avg_distance = sum(ball.distance_from_hole() for ball in landed_balls)/len(landed_balls)
     print(avg_distance)
 
-    landed_balls = landed_balls[0:population // 50]  # 0:10
+    landed_balls = landed_balls[0:population // 10]  # // 50
     global best_ball
     best_ball = landed_balls[0]
     new_balls = []
