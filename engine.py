@@ -49,9 +49,13 @@ class Ball:
         self.a = self.force() / self.m
         self.v += self.a * dt
 
+    def distance_from_hole(self):
+        return mag(self.pos - field.HOLE_POS) if not self.in_hole() else 0
+
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
-        score = -mag(self.pos - field.HOLE_POS)
+        # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
+        score = -self.distance_from_hole() - 0.1 * self.launch_speed
         return score
 
     def friction(self):
@@ -68,6 +72,12 @@ class Ball:
         self.v -= (2 * self.v.dot(wall_norm) * randomized_wall_norm)
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
 
+    def in_moat(self, moat):
+        return moat.left < self.pos.x < moat.right and moat.bottom < self.pos.y < moat.top
+
+    def in_any_moat(self):
+        return self.in_moat(field.left_moat) or self.in_moat(field.right_moat)
+
     def check_walls(self):
         if self.pos.x < field.LEFT_WALL:
             self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
@@ -78,9 +88,7 @@ class Ball:
         elif self.pos.y > field.TOP_WALL:
             self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
 
-        if field.left_moat.ball_in(self):
-            self.v = Vec()
-        if field.right_moat.ball_in(self):
+        if self.in_any_moat():
             self.v = Vec()
 
     def update(self):

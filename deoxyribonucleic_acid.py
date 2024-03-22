@@ -64,10 +64,10 @@ pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
-initial_population = 5000
+initial_population = 10000
 population = 1000
 
-sigma = 0.3
+sigma = 1
 
 angle_variation = 2
 speed_variation = 0.5
@@ -103,12 +103,16 @@ def attack_of_the_clones(landed_balls):
 
 def attack_of_the_gaussian_clones(landed_balls):
     landed_balls = sorted(landed_balls, key=lambda x: x.fitness, reverse=True)
-    landed_balls = landed_balls[0:population // 5]  # 0:10
+
+    avg_distance = sum(ball.distance_from_hole() for ball in landed_balls)/len(landed_balls)
+    print(avg_distance)
+
+    landed_balls = landed_balls[0:population // 50]  # 0:10
     global best_ball
     best_ball = landed_balls[0]
     new_balls = []
     for ball in landed_balls:
-        for j in range(population // len(landed_balls)):
+        for j in range((population if generation >= 1 else initial_population) // len(landed_balls)):
             new_balls.append(ball.varied_copy_gaussian(sigma))
     return new_balls
 
@@ -147,7 +151,7 @@ while True:
             draw_course()
             # angle_variation *= 0.9  # 0.92  # 0.95
             # speed_variation *= 0.9
-            sigma *= 0.7  # TODO 0.9
+            sigma *= 0.8  # TODO 0.9
 
             if best_ball is not None:
                 generation += 1
