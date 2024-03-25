@@ -154,10 +154,14 @@ while True:
 
         if all_families_done(families):
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
+            print([fam.family_score for fam in families])
 
             if len(families) > 1:
-                if generation % 30 == 0:  # kill off a family every 20 generations
+                if generation % 10 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
+
+                    for family in families:
+                        family.population = population // len(families)
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
             sigma *= 0.8  # this will eventually family-dependent, just for display purposes
@@ -175,7 +179,7 @@ while True:
                 draw_text("sigma: %.5f" % sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))
-                draw_text("best family score: %.5f" % families[0].fitness, (20, 120))  # check
+                draw_text("best family score: %.5f" % families[0].family_score, (20, 120))  # check
 
     p.display.flip()
     p.time.Clock().tick(100)  # caps frame rate at 100

@@ -36,8 +36,8 @@ class Family:
         self.generations_passed += 1
 
         avg_distance = sum(ball.distance_from_hole() for ball in self.balls) / len(self.balls)
-        print(avg_distance)
-        self.family_score = avg_distance
+        # print(avg_distance)
+        self.family_score = -avg_distance
 
         self.balls = self.balls[0:self.population // 10]  # // 50
         # global best_ball

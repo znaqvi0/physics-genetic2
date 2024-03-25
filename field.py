@@ -12,7 +12,7 @@ BOTTOM_WALL = 0
 TOP_WALL = HEIGHT
 MIDDLE = 1.5
 
-HOLE_POS = Vec(MIDDLE, 5.2)  # TODO original 5.5
+HOLE_POS = Vec(MIDDLE, 5.5)  # TODO original 5.5
 BALL_POS0 = Vec(MIDDLE, 0.2)
 
 LEFT_WALL_NORM = Vec(1, 0)
