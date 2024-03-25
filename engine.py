@@ -55,14 +55,29 @@ class Ball:
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
         # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-        score = -self.distance_from_hole() - 0.025 * self.launch_speed
+        score = -self.distance_from_hole()  # - 0.025 * self.launch_speed
         return score
 
     def friction(self):
         return -0.015 * norm(self.v)
 
+    def hill_valley_force(self):
+        force = Vec()
+        distance_to_hill = mag(self.pos - field.hill_pos)
+        distance_to_valley = mag(self.pos - field.valley_pos)
+        if distance_to_hill < field.hill_valley_radius/2.0:  # inner
+            force = 0.2 * distance_to_hill * norm(self.pos - field.hill_pos)
+        elif distance_to_hill < field.hill_valley_radius:  # outer
+            force = 0.05/distance_to_hill * norm(self.pos - field.hill_pos)
+
+        if distance_to_valley < field.hill_valley_radius/2.0:  # inner
+            force = -0.2 * distance_to_valley * norm(self.pos - field.valley_pos)
+        elif distance_to_valley < field.hill_valley_radius:  # outer
+            force = -0.05/distance_to_valley * norm(self.pos - field.valley_pos)
+        return force
+
     def force(self):
-        return self.friction()
+        return self.friction() + self.hill_valley_force()
 
     def in_hole(self):
         return mag(self.pos - field.HOLE_POS) <= (-1.0 / 32) * mag(self.v) + field.hole_radius
@@ -71,12 +86,6 @@ class Ball:
         randomized_wall_norm = wall_norm.rotate(random.gauss(0, sigma), degrees=True)
         self.v -= (2 * self.v.dot(wall_norm) * randomized_wall_norm)
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
-
-    def in_moat(self, moat):
-        return moat.left < self.pos.x < moat.right and moat.bottom < self.pos.y < moat.top
-
-    def in_any_moat(self):
-        return self.in_moat(field.left_moat) or self.in_moat(field.right_moat)
 
     def check_walls(self):
         if self.pos.x < field.LEFT_WALL:
@@ -87,9 +96,6 @@ class Ball:
             self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
         elif self.pos.y > field.TOP_WALL:
             self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
-
-        if self.in_any_moat():
-            self.v = Vec()
 
     def update(self):
         if mag(self.v) > 0.005 and not self.in_hole():

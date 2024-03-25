@@ -12,7 +12,7 @@ BOTTOM_WALL = 0
 TOP_WALL = HEIGHT
 MIDDLE = 1.5
 
-HOLE_POS = Vec(MIDDLE, 5.5)  # TODO original 5.5
+HOLE_POS = Vec(LEFT_WALL + 0.8, TOP_WALL - 0.8)
 BALL_POS0 = Vec(MIDDLE, 0.2)
 
 LEFT_WALL_NORM = Vec(1, 0)
@@ -31,5 +31,8 @@ class Moat:
         self.bottom = bottom
 
 
-left_moat = Moat(left=LEFT_WALL, right=LEFT_WALL + 0.8, top=TOP_WALL - 1.8, bottom=TOP_WALL - 2)
-right_moat = Moat(left=RIGHT_WALL-2, right=RIGHT_WALL, top=left_moat.top, bottom=left_moat.bottom)
+# left_moat = Moat(left=LEFT_WALL, right=LEFT_WALL + 0.8, top=TOP_WALL - 1.8, bottom=TOP_WALL - 2)
+# right_moat = Moat(left=RIGHT_WALL-2, right=RIGHT_WALL, top=left_moat.top, bottom=left_moat.bottom)
+hill_pos = Vec(1, 2)
+valley_pos = Vec(2, TOP_WALL - 2)
+hill_valley_radius = 1

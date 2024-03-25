@@ -27,7 +27,7 @@ def ball_xy(ball):
 
 
 def draw_ball(ball):
-    p.draw.circle(screen, ball.color, ball_xy(ball), max(ball.r, 1))
+    p.draw.circle(screen, ball.color, ball_xy(ball), max(ball.r * scale, 1))
 
 
 def make_display(text, top_left, text_color=(255, 255, 255), bg_color=None):
@@ -44,20 +44,14 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
 
 
 def draw_course():
+    screen.fill(screen_color)
     p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
                                        y0 - field.TOP_WALL * scale,
                                        (field.RIGHT_WALL - field.LEFT_WALL) * scale,
                                        (field.TOP_WALL - field.BOTTOM_WALL) * scale))
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
-
-    p.draw.rect(screen, (0, 150, 200), (x0 + field.left_moat.left * scale,
-                                      y0 - field.left_moat.top * scale,
-                                      (field.left_moat.right - field.left_moat.left) * scale,
-                                      (field.left_moat.top - field.left_moat.bottom) * scale))
-    p.draw.rect(screen, (0, 150, 200), (x0 + field.right_moat.left * scale,
-                                        y0 - field.right_moat.top * scale,
-                                        (field.right_moat.right - field.right_moat.left) * scale,
-                                        (field.right_moat.top - field.right_moat.bottom) * scale))
+    draw_ball(Ball(field.hill_pos, 0, 0, field.hill_valley_radius, 1, color=(0, 175, 30)))
+    draw_ball(Ball(field.valley_pos, 0, 0, field.hill_valley_radius, 1, color=(0, 175, 30)))
 
 
 # constants
@@ -65,7 +59,7 @@ pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
-initial_population = 10000
+initial_population = 1000
 population = 1000
 
 sigma = 1  # TODO check avg distance for 1 and 0.5 at sigma = 0.1
@@ -141,7 +135,7 @@ while True:
                 running = not running
 
     # screen.fill((150, 210, 255))  # comment/uncomment to enable/disable trail
-
+    # draw_course()
     if running:
         for i in range(20):  # steps multiple times every frame, originally 2000//80
             for family in families:
