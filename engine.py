@@ -55,7 +55,7 @@ class Ball:
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
         # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-        score = -self.distance_from_hole() - 0.025 * self.launch_speed
+        score = -self.distance_from_hole()  # - 0.025 * self.launch_speed
         return score
 
     def friction(self):
