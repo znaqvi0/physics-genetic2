@@ -148,7 +148,7 @@ while True:
                 draw_ball(ball)
 
         if all_families_done(families):
-            # TODO create a new family from the best ball once there is only one family left
+            # TODO create a new family (with sigma 0.2) from the best ball once there is only one family left
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
