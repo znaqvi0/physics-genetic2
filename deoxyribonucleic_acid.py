@@ -50,8 +50,9 @@ def draw_course():
                                        (field.RIGHT_WALL - field.LEFT_WALL) * scale,
                                        (field.TOP_WALL - field.BOTTOM_WALL) * scale))
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
-    draw_ball(Ball(field.hill_pos, 0, 0, field.hill_valley_radius, 1, color=(0, 175, 30)))
-    draw_ball(Ball(field.valley_pos, 0, 0, field.hill_valley_radius, 1, color=(0, 175, 30)))
+    p.draw.line(screen, (0, 0, 0),
+                (x0 + field.wall.x * scale, y0 - field.wall.p1.y * scale),
+                (x0 + field.wall.x * scale, y0 - field.wall.p2.y * scale))
 
 
 # constants
@@ -59,7 +60,7 @@ pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
-initial_population = 1000
+initial_population = 10000
 population = 1000
 
 sigma = 1  # TODO check avg distance for 1 and 0.5 at sigma = 0.1

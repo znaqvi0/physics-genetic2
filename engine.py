@@ -55,29 +55,15 @@ class Ball:
     def calculate_fitness(self):
         # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
         # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-        score = -self.distance_from_hole()  # - 0.025 * self.launch_speed
+
+        score = -self.distance_from_hole()
         return score
 
     def friction(self):
         return -0.015 * norm(self.v)
 
-    def hill_valley_force(self):
-        force = Vec()
-        distance_to_hill = mag(self.pos - field.hill_pos)
-        distance_to_valley = mag(self.pos - field.valley_pos)
-        if distance_to_hill < field.hill_valley_radius/2.0:  # inner
-            force = 0.2 * distance_to_hill * norm(self.pos - field.hill_pos)
-        elif distance_to_hill < field.hill_valley_radius:  # outer
-            force = 0.05/distance_to_hill * norm(self.pos - field.hill_pos)
-
-        if distance_to_valley < field.hill_valley_radius/2.0:  # inner
-            force = -0.2 * distance_to_valley * norm(self.pos - field.valley_pos)
-        elif distance_to_valley < field.hill_valley_radius:  # outer
-            force = -0.05/distance_to_valley * norm(self.pos - field.valley_pos)
-        return force
-
     def force(self):
-        return self.friction() + self.hill_valley_force()
+        return self.friction()
 
     def in_hole(self):
         return mag(self.pos - field.HOLE_POS) <= (-1.0 / 32) * mag(self.v) + field.hole_radius
@@ -96,6 +82,14 @@ class Ball:
             self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
         elif self.pos.y > field.TOP_WALL:
             self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
+
+        # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
+        # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
+        if self.pos.y < field.wall_top.y:
+            if self.pos.x > field.wall.x > (self.pos + self.v * dt).x:
+                self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())
+            elif self.pos.x < field.wall.x < (self.pos + self.v * dt).x:
+                self.collide_with_wall(Vec(-1, 0), field.WALL_RANDOMNESS())
 
     def update(self):
         if mag(self.v) > 0.005 and not self.in_hole():

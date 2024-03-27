@@ -12,8 +12,8 @@ BOTTOM_WALL = 0
 TOP_WALL = HEIGHT
 MIDDLE = 1.5
 
-HOLE_POS = Vec(LEFT_WALL + 0.8, TOP_WALL - 0.8)
-BALL_POS0 = Vec(MIDDLE, 0.2)
+HOLE_POS = Vec(LEFT_WALL + 1, BOTTOM_WALL + 0.5)
+BALL_POS0 = Vec(LEFT_WALL + 2, BOTTOM_WALL + 0.5)
 
 LEFT_WALL_NORM = Vec(1, 0)
 RIGHT_WALL_NORM = Vec(-1, 0)
@@ -23,16 +23,13 @@ BOTTOM_WALL_NORM = Vec(0, 1)
 WALL_RANDOMNESS = lambda: random.gauss(0, 0.1)
 
 
-class Moat:
-    def __init__(self, left, right, top, bottom):
-        self.left = left
-        self.right = right
-        self.top = top
-        self.bottom = bottom
+class Wall:
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+        self.x = self.p1.x
 
 
-# left_moat = Moat(left=LEFT_WALL, right=LEFT_WALL + 0.8, top=TOP_WALL - 1.8, bottom=TOP_WALL - 2)
-# right_moat = Moat(left=RIGHT_WALL-2, right=RIGHT_WALL, top=left_moat.top, bottom=left_moat.bottom)
-hill_pos = Vec(1, 2)
-valley_pos = Vec(2, TOP_WALL - 2)
-hill_valley_radius = 1
+wall_bottom = Vec(MIDDLE, 0)
+wall_top = Vec(MIDDLE, 3)
+wall = Wall(wall_bottom, wall_top)
