@@ -116,7 +116,7 @@ def attack_of_the_gaussian_clones(landed_balls):
 
 
 for i in range(num_families):
-    families.append(Family(population // num_families, 1))
+    families.append(Family(population // num_families, sigma))
 for family in families:
     for i in range(initial_population // num_families):
         family.add(random_ball())
@@ -148,10 +148,11 @@ while True:
                 draw_ball(ball)
 
         if all_families_done(families):
+            # TODO create a new family from the best ball once there is only one family left
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and sigma < 0.001:  # and generation >= 20:
+            if len(families) > 1 and sigma < 0.01:  # 0.001 | and generation >= 20:
                 if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
@@ -171,7 +172,7 @@ while True:
 
                 draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
                 draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
-                draw_text("sigma: %.5f" % sigma, (20, 60))
+                draw_text("sigma: %.5f" % families[0].sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))
                 draw_text("best family score: %.5f" % families[0].family_score, (20, 120))  # check
