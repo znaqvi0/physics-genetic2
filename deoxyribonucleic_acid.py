@@ -150,8 +150,8 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1:
-                if generation % 10 == 0:  # kill off a family every _ generations
+            if len(families) > 1 and sigma < 0.001:  # and generation >= 20:
+                if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
                     for family in families:
