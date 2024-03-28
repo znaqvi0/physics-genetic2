@@ -39,7 +39,7 @@ class Family:
         # print(avg_distance)
         self.family_score = -avg_distance
 
-        self.balls = self.balls[0:self.population // 10]  # // 50
+        self.balls = self.balls[0:self.population // 3]  # // 50
         # global best_ball
         self.best_ball = self.balls[0]
         new_balls = []
@@ -47,6 +47,6 @@ class Family:
             for j in range(self.population // len(self.balls)):
                 new_balls.append(ball.varied_copy_gaussian(self.sigma))
 
-        self.sigma *= 0.8
+        self.sigma *= 0.9
         return new_balls
 

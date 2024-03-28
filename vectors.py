@@ -68,3 +68,6 @@ class Vec:
                        math.sin(angle) * self.x + math.cos(angle) * self.y,
                        self.z)
         raise TypeError(f"cannot compute vector rotation using {type(angle)}")
+
+    def copy(self):
+        return Vec(self.x, self.y, self.z)

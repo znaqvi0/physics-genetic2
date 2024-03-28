@@ -61,20 +61,17 @@ r = 0.021335
 m = 0.045
 
 initial_population = 10000
-population = 1000
+population = 250
+num_families = 20
 
-sigma = 1  # TODO check avg distance for 1 and 0.5 at sigma = 0.1
+sigma = 0.05  # sigma should be different for launch angle if using angle
 # 0.5: 0.93 avg dist, 1: 1.01 avg
 # test w/ 1000 varied copies of best ball after convergence, sigma=0.1
-
-angle_variation = 2
-speed_variation = 0.5
 
 generation = 1
 
 best_ball = Ball(Vec(), 0, 0, 1, 1)
 
-num_families = 10
 test_family = Family(population, sigma)
 # families = [test_family]
 families = []
@@ -124,6 +121,7 @@ for family in families:
 #     families[0].add(random_ball())
 draw_course()
 running = False
+sub_families_created = False
 t = 0
 
 while True:
@@ -152,12 +150,21 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and sigma < 0.01:  # 0.001 | and generation >= 20:
+            if len(families) > 1 and sigma < 0.02:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
+                # kill off faster?
                 if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
                     for family in families:
                         family.population = population // len(families)
+            # elif not sub_families_created and len(families) == 1:
+            #     # families[0].population = 200
+            #     # for i in range(4):
+            #     #     fam = Family(200, 0.05)
+            #     #     for j in range(200):
+            #     #         fam.add(best_ball.varied_copy_gaussian(fam.sigma))
+            #     families[0].sigma = 0.05
+            #     sub_families_created = True
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
             sigma *= 0.8  # this will eventually family-dependent, just for display purposes
@@ -170,8 +177,9 @@ while True:
             if best_ball is not None:
                 generation += 1
 
-                draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
-                draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
+                # draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
+                # draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
+                draw_text(best_ball.__repr__(), (20, 40))
                 draw_text("sigma: %.5f" % families[0].sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))

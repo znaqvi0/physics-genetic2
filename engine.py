@@ -30,7 +30,8 @@ class Ball:
         self.fitness = 0
 
     def __repr__(self):
-        return f"ball\n\tpos = {self.pos}\n\tvel = {self.v}\n\tacc = {self.a}"
+        # return f"ball\n\tpos = {self.pos}\n\tvel = {self.v}\n\tacc = {self.a}"
+        return f"v0={self.v0}"
 
     def varied_copy(self, angle_variation, speed_variation):
         return Ball(self.pos0,
@@ -39,10 +40,13 @@ class Ball:
                     self.r, self.m, self.color)
 
     def varied_copy_gaussian(self, sigma):
-        return Ball(self.pos0,
+        ball = Ball(self.pos0,
                     random.gauss(self.launch_speed, sigma),
                     random.gauss(self.launch_angle, sigma),
                     self.r, self.m, self.color)
+        ball.v = Vec(random.gauss(self.v0.x, sigma), random.gauss(self.v0.y, sigma))
+        ball.v0 = ball.v.copy()
+        return ball
 
     def move(self):
         self.pos += self.v * dt
