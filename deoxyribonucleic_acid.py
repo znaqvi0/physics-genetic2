@@ -61,10 +61,10 @@ r = 0.021335
 m = 0.045
 
 initial_population = 10000
-population = 250
+population = 1000
 num_families = 20
 
-sigma = 0.05  # sigma should be different for launch angle if using angle
+sigma = 0.1  # sigma should be different for launch angle if using angle
 # 0.5: 0.93 avg dist, 1: 1.01 avg
 # test w/ 1000 varied copies of best ball after convergence, sigma=0.1
 
@@ -96,29 +96,12 @@ def all_families_done(families):
     return True
 
 
-def attack_of_the_gaussian_clones(landed_balls):
-    landed_balls = sorted(landed_balls, key=lambda x: x.fitness, reverse=True)
-
-    avg_distance = sum(ball.distance_from_hole() for ball in landed_balls)/len(landed_balls)
-    print(avg_distance)
-
-    landed_balls = landed_balls[0:population // 10]  # // 50
-    global best_ball
-    best_ball = landed_balls[0]
-    new_balls = []
-    for ball in landed_balls:
-        for j in range((population if generation >= 1 else initial_population) // len(landed_balls)):
-            new_balls.append(ball.varied_copy_gaussian(sigma))
-    return new_balls
-
-
 for i in range(num_families):
     families.append(Family(population // num_families, sigma))
 for family in families:
     for i in range(initial_population // num_families):
         family.add(random_ball())
-# for i in range(population):
-#     families[0].add(random_ball())
+
 draw_course()
 running = False
 sub_families_created = False
@@ -146,28 +129,18 @@ while True:
                 draw_ball(ball)
 
         if all_families_done(families):
-            # TODO create a new family (with sigma 0.2) from the best ball once there is only one family left
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and sigma < 0.02:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
-                # kill off faster?
+            if len(families) > 1 and sigma < 0.05:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
                 if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
                     for family in families:
                         family.population = population // len(families)
-            # elif not sub_families_created and len(families) == 1:
-            #     # families[0].population = 200
-            #     # for i in range(4):
-            #     #     fam = Family(200, 0.05)
-            #     #     for j in range(200):
-            #     #         fam.add(best_ball.varied_copy_gaussian(fam.sigma))
-            #     families[0].sigma = 0.05
-            #     sub_families_created = True
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
-            sigma *= 0.8  # this will eventually family-dependent, just for display purposes
+            sigma *= 0.9  # this will eventually family-dependent, just for display purposes
             for family in families:
                 family.balls = family.next_gen()
 
@@ -180,7 +153,7 @@ while True:
                 # draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
                 # draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
                 draw_text(best_ball.__repr__(), (20, 40))
-                draw_text("sigma: %.5f" % families[0].sigma, (20, 60))
+                draw_text("sigma: %.10f" % families[0].sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))
                 draw_text("best family score: %.5f" % families[0].family_score, (20, 120))  # check
