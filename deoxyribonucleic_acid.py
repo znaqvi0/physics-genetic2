@@ -43,6 +43,11 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
     screen.blit(display, display_rect)
 
 
+def draw_line(p1, p2):
+    p.draw.line(screen, (0, 0, 0), (x0 + p1.x * scale, y0 - p1.y * scale),
+                (x0 + p2.x * scale, y0 - p2.y * scale))
+
+
 def draw_course():
     screen.fill(screen_color)
     p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
@@ -50,9 +55,14 @@ def draw_course():
                                        (field.RIGHT_WALL - field.LEFT_WALL) * scale,
                                        (field.TOP_WALL - field.BOTTOM_WALL) * scale))
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
-    p.draw.line(screen, (0, 0, 0),
-                (x0 + field.wall.x * scale, y0 - field.wall.p1.y * scale),
-                (x0 + field.wall.x * scale, y0 - field.wall.p2.y * scale))
+
+    draw_line(field.bunker_left.p1, field.bunker_left.p2)
+    draw_line(field.bunker_right.p1, field.bunker_right.p2)
+    draw_line(field.bunker_bottom.p1, field.bunker_bottom.p2)
+
+    # p.draw.line(screen, (0, 0, 0),
+    #             (x0 + field.wall.x * scale, y0 - field.wall.p1.y * scale),
+    #             (x0 + field.wall.x * scale, y0 - field.wall.p2.y * scale))
 
 
 # constants
@@ -132,7 +142,7 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and sigma < 0.05:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
+            if len(families) > 1 and sigma < 0.025:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
                 if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 

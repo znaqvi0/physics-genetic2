@@ -57,9 +57,6 @@ class Ball:
         return mag(self.pos - field.HOLE_POS) if not self.in_hole() else 0
 
     def calculate_fitness(self):
-        # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
-        # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-
         score = -self.distance_from_hole()
         return score
 
@@ -77,6 +74,9 @@ class Ball:
         self.v -= (2 * self.v.dot(wall_norm) * randomized_wall_norm)
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
 
+    def next_position(self):
+        return self.pos + self.v * dt
+
     def check_walls(self):
         if self.pos.x < field.LEFT_WALL:
             self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
@@ -87,13 +87,25 @@ class Ball:
         elif self.pos.y > field.TOP_WALL:
             self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
 
-        # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
-        # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
-        if self.pos.y < field.wall_top.y:
-            if self.pos.x > field.wall.x > (self.pos + self.v * dt).x:
+        if field.bunker_left.p1.y <= self.pos.y <= field.bunker_left.p2.y:
+            # left wall
+            if self.pos.x > field.bunker_left.x > self.next_position().x:
                 self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())
-            elif self.pos.x < field.wall.x < (self.pos + self.v * dt).x:
+            elif self.pos.x < field.bunker_left.x < self.next_position().x:
                 self.collide_with_wall(Vec(-1, 0), field.WALL_RANDOMNESS())
+
+            # right wall
+            if self.pos.x > field.bunker_right.x > self.next_position().x:
+                self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())
+            elif self.pos.x < field.bunker_right.x < self.next_position().x:
+                self.collide_with_wall(Vec(-1, 0), field.WALL_RANDOMNESS())
+
+        # bottom wall
+        if field.bunker_bottom.p1.x <= self.pos.x <= field.bunker_bottom.p2.x:
+            if self.pos.y > field.bunker_bottom.y > self.next_position().y:
+                self.collide_with_wall(Vec(0, 1), field.WALL_RANDOMNESS())
+            elif self.pos.y < field.bunker_bottom.y < self.next_position().y:
+                self.collide_with_wall(Vec(0, -1), field.WALL_RANDOMNESS())
 
     def update(self):
         if mag(self.v) > 0.005 and not self.in_hole():

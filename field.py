@@ -12,8 +12,8 @@ BOTTOM_WALL = 0
 TOP_WALL = HEIGHT
 MIDDLE = 1.5
 
-HOLE_POS = Vec(LEFT_WALL + 1, BOTTOM_WALL + 0.5)
-BALL_POS0 = Vec(LEFT_WALL + 2, BOTTOM_WALL + 0.5)
+HOLE_POS = Vec(LEFT_WALL + 1.5, BOTTOM_WALL + 3)
+BALL_POS0 = Vec(MIDDLE, BOTTOM_WALL + 0.2)
 
 LEFT_WALL_NORM = Vec(1, 0)
 RIGHT_WALL_NORM = Vec(-1, 0)
@@ -28,8 +28,9 @@ class Wall:
         self.p1 = p1
         self.p2 = p2
         self.x = self.p1.x
+        self.y = self.p1.y
 
 
-wall_bottom = Vec(MIDDLE, 0)
-wall_top = Vec(MIDDLE, 3)
-wall = Wall(wall_bottom, wall_top)
+bunker_left = Wall(Vec(LEFT_WALL + 1, BOTTOM_WALL + 2), Vec(LEFT_WALL + 1, BOTTOM_WALL + 4))
+bunker_right = Wall(Vec(RIGHT_WALL - 1, BOTTOM_WALL + 2), Vec(RIGHT_WALL - 1, BOTTOM_WALL + 4))
+bunker_bottom = Wall(Vec(LEFT_WALL + 1, BOTTOM_WALL + 2), Vec(RIGHT_WALL - 1, BOTTOM_WALL + 2))
