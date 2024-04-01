@@ -61,10 +61,10 @@ r = 0.021335
 m = 0.045
 
 initial_population = 10000
-population = 1000
-num_families = 20
+population = 500
+num_families = 15
 
-sigma = 0.1  # sigma should be different for launch angle if using angle
+sigma = 0.15  # sigma should be different for launch angle if using angle
 # 0.5: 0.93 avg dist, 1: 1.01 avg
 # test w/ 1000 varied copies of best ball after convergence, sigma=0.1
 
