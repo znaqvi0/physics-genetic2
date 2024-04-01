@@ -106,7 +106,8 @@ draw_course()
 running = False
 sub_families_created = False
 t = 0
-
+# TODO create family with a "seed" ball, large sigma, and high convergence (sigma) rate using normal top x% for next gen
+# TODO when new family sigma < original family sigma, kill off worse family
 while True:
     for event in p.event.get():
         if event.type == p.QUIT:  # this refers to clicking on the "x"-close
@@ -132,7 +133,7 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and sigma < 0.05:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
+            if len(families) > 1 and families[0].sigma < 0.05:
                 if generation % 5 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
@@ -140,7 +141,7 @@ while True:
                         family.population = population // len(families)
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
-            sigma *= 0.9  # this will eventually family-dependent, just for display purposes
+            # sigma *= 0.9  # this will eventually family-dependent, just for display purposes
             for family in families:
                 family.balls = family.next_gen()
 
@@ -150,13 +151,12 @@ while True:
             if best_ball is not None:
                 generation += 1
 
-                # draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
-                # draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
                 draw_text(best_ball.__repr__(), (20, 40))
                 draw_text("sigma: %.10f" % families[0].sigma, (20, 60))
                 draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
                 draw_text("generation: %.0i" % generation, (20, 100))
-                draw_text("best family score: %.5f" % families[0].family_score, (20, 120))  # check
+                draw_text("best family score: %.5f" % families[0].family_score, (20, 120))
+                draw_text("number of families: %.0i" % len(families), (20, 140))
 
     p.display.flip()
     p.time.Clock().tick(100)  # caps frame rate at 100
