@@ -60,10 +60,6 @@ def draw_course():
     draw_line(field.bunker_right.p1, field.bunker_right.p2)
     draw_line(field.bunker_bottom.p1, field.bunker_bottom.p2)
 
-    # p.draw.line(screen, (0, 0, 0),
-    #             (x0 + field.wall.x * scale, y0 - field.wall.p1.y * scale),
-    #             (x0 + field.wall.x * scale, y0 - field.wall.p2.y * scale))
-
 
 # constants
 pos0 = field.BALL_POS0
@@ -71,12 +67,10 @@ r = 0.021335
 m = 0.045
 
 initial_population = 10000
-population = 1000
+population = 500
 num_families = 20
 
 sigma = 0.1  # sigma should be different for launch angle if using angle
-# 0.5: 0.93 avg dist, 1: 1.01 avg
-# test w/ 1000 varied copies of best ball after convergence, sigma=0.1
 
 generation = 1
 
@@ -143,7 +137,7 @@ while True:
             print([fam.family_score for fam in families])
 
             if len(families) > 1 and sigma < 0.025:  # and sigma < 0.01:  # 0.001 | and generation >= 20:
-                if generation % 5 == 0:  # kill off a family every _ generations
+                if generation % 4 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
 
                     for family in families:
