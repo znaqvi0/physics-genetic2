@@ -57,11 +57,11 @@ class Ball:
         return mag(self.pos - field.HOLE_POS) if not self.in_hole() else 0
 
     def calculate_fitness(self):
-        # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
-        # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-
         score = -self.distance_from_hole()
         return score
+
+    def personality(self):
+        return math.atan2(self.v0.x, self.v0.y) + mag(self.v0)
 
     def friction(self):
         return -0.015 * norm(self.v)

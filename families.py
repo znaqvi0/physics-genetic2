@@ -1,5 +1,6 @@
 from engine import Ball
 from vectors import Vec
+import numpy as np
 
 
 class Family:
@@ -19,7 +20,7 @@ class Family:
         self.balls = sorted(self.balls, key=lambda x: x.fitness)
 
     def calculate_family_score(self):
-        score = sum([ball.fitness for ball in self.balls])/len(self.balls)
+        score = sum([ball.fitness for ball in self.balls]) / len(self.balls)
         return score
 
     def update(self):
@@ -31,6 +32,16 @@ class Family:
             if not ball.done:
                 return False
         return True
+
+    def tribalism(self, num_families):
+        new_families = []
+        lst = sorted(self.balls, key=lambda x: x.personality())
+        sections = np.array_split(lst, num_families)
+        for i in range(len(sections)):  # for every section
+            new_families.append(Family(self.population // num_families, self.sigma))
+            for ball in sections[i]:  # add every ball in the section to the corresponding family
+                new_families[i].add(ball)
+        return new_families
 
     def next_gen(self):
         self.balls = sorted(self.balls, key=lambda x: x.fitness, reverse=True)
@@ -44,7 +55,7 @@ class Family:
         if not self.last_family:
             num_balls_to_reproduce = max(self.population // 5, min(len(success_balls), self.population//2))
         else:
-            num_balls_to_reproduce = self.population//5
+            num_balls_to_reproduce = self.population // 5
         self.balls = self.balls[0:num_balls_to_reproduce]
         self.best_ball = self.balls[0]
         new_balls = []
@@ -55,3 +66,9 @@ class Family:
         self.sigma *= 0.9
         return new_balls
 
+
+# if __name__ == "__main__":
+#     fam = Family(500, 0.1)
+#     for i in range(fam.population):
+#         fam.add(deoxyribonucleic_acid.random_ball())
+#     print(fam.tribalism(10)[0].balls)

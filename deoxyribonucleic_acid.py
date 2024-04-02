@@ -62,7 +62,7 @@ m = 0.045
 
 initial_population = 10000
 population = 500
-num_families = 15
+num_families = 50
 
 sigma = 0.15  # sigma should be different for launch angle if using angle
 # 0.5: 0.93 avg dist, 1: 1.01 avg
@@ -96,19 +96,19 @@ def all_families_done(families):
     return True
 
 
-for i in range(num_families):
-    families.append(Family(population // num_families, sigma))
-for family in families:
-    for i in range(initial_population // num_families):
+# for i in range(num_families):
+#     families.append(Family(population // num_families, sigma))
+families.append(Family(population, sigma))
+for family in families:  # only one family
+    for i in range(initial_population):
         family.add(random_ball())
 
 draw_course()
 running = False
 sub_families_created = False
 t = 0
-# TODO create family with a "seed" ball, large sigma, and high convergence (sigma) rate using normal top x% for next gen
-# TODO when new family sigma < original family sigma, kill off worse family
-while True:
+# TODO apply a better filter to divide families?
+while __name__ == "__main__":
     for event in p.event.get():
         if event.type == p.QUIT:  # this refers to clicking on the "x"-close
             p.quit()
@@ -133,8 +133,11 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1 and families[0].sigma < 0.05:
-                if generation % 5 == 0:  # kill off a family every _ generations
+            if generation == 3:
+                families = families[0].tribalism(num_families)
+
+            if len(families) > 1 and families[0].sigma < 0.02:
+                if generation % 1 == 0:  # kill off a family every _ generations (originally % 5 then 2)
                     families.remove(families[-1])
 
                     for family in families:
