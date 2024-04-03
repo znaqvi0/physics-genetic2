@@ -38,13 +38,13 @@ class Family:
         avg_distance = sum(ball.distance_from_hole() for ball in self.balls) / len(self.balls)
         self.family_score = -avg_distance
 
-        self.balls = self.balls[0:self.population // 2]  # // 50
+        self.balls = self.balls[0:max(self.population // 5, 1)]  # // 50
         self.best_ball = self.balls[0]
         new_balls = []
         for ball in self.balls:
             for j in range(self.population // len(self.balls)):
                 new_balls.append(ball.varied_copy_gaussian(self.sigma))
 
-        self.sigma *= 0.9
+        self.sigma *= 0.8
         return new_balls
 
