@@ -11,9 +11,7 @@ class Ball:
         self.v = Vec(math.cos(math.radians(launch_angle)),
                      math.sin(math.radians(launch_angle)),
                      0) * launch_speed
-        self.v0 = Vec(math.cos(math.radians(launch_angle)),
-                      math.sin(math.radians(launch_angle)),
-                      0) * launch_speed
+        self.v0 = self.v.copy()
         self.pos = position
         self.pos0 = position
         self.a = Vec()
@@ -30,7 +28,7 @@ class Ball:
         self.fitness = 0
 
     def __repr__(self):
-        return f"ball\n\tpos = {self.pos}\n\tvel = {self.v}\n\tacc = {self.a}"
+        return f"{self.v0}"
 
     def varied_copy(self, angle_variation, speed_variation):
         return Ball(self.pos0,
@@ -39,10 +37,13 @@ class Ball:
                     self.r, self.m, self.color)
 
     def varied_copy_gaussian(self, sigma):
-        return Ball(self.pos0,
+        ball = Ball(self.pos0,
                     random.gauss(self.launch_speed, sigma),
                     random.gauss(self.launch_angle, sigma),
                     self.r, self.m, self.color)
+        ball.v = Vec(random.gauss(self.v0.x, sigma), random.gauss(self.v0.y, sigma))
+        ball.v0 = ball.v.copy()
+        return ball
 
     def move(self):
         self.pos += self.v * dt
@@ -53,9 +54,7 @@ class Ball:
         return mag(self.pos - field.HOLE_POS) if not self.in_hole() else 0
 
     def calculate_fitness(self):
-        # TODO based on distance from hole & whether there is a wall in ball-hole line of sight
-        # score = -mag(self.pos - field.HOLE_POS) - 0.1 * self.launch_speed  # - (2 if self.in_any_moat() else 0)
-        score = -self.distance_from_hole()  # - 0.025 * self.launch_speed
+        score = -self.distance_from_hole()
         return score
 
     def friction(self):
