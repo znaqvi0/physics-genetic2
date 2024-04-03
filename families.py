@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Family:
-    def __init__(self, population, sigma):
+    def __init__(self, population, sigma, sigma_rate):
         self.family_score = 0
         self.balls = []
         self.generations_passed = 0
@@ -12,6 +12,7 @@ class Family:
         self.sigma = sigma
         self.best_ball = Ball(Vec(), 0, 0, 1, 1)
         self.last_family = False
+        self.sigma_rate = sigma_rate
 
     def add(self, ball):
         self.balls.append(ball)
@@ -33,12 +34,12 @@ class Family:
                 return False
         return True
 
-    def tribalism(self, num_families):
+    def tribalism(self, num_families, new_sigma):
         new_families = []
         lst = sorted(self.balls, key=lambda x: x.personality())
         sections = np.array_split(lst, num_families)
         for i in range(len(sections)):  # for every section
-            new_families.append(Family(self.population // num_families, self.sigma))
+            new_families.append(Family(self.population // num_families, new_sigma, self.sigma_rate))
             for ball in sections[i]:  # add every ball in the section to the corresponding family
                 new_families[i].add(ball)
         return new_families
@@ -56,19 +57,13 @@ class Family:
             num_balls_to_reproduce = max(self.population // 5, min(len(success_balls), self.population//2))
         else:
             num_balls_to_reproduce = self.population // 5
-        self.balls = self.balls[0:num_balls_to_reproduce]
+
+        self.balls = self.balls[0:max(num_balls_to_reproduce, 1)]
         self.best_ball = self.balls[0]
         new_balls = []
         for ball in self.balls:
             for j in range(self.population // len(self.balls)):
                 new_balls.append(ball.varied_copy_gaussian(self.sigma))
 
-        self.sigma *= 0.9
+        self.sigma *= self.sigma_rate
         return new_balls
-
-
-# if __name__ == "__main__":
-#     fam = Family(500, 0.1)
-#     for i in range(fam.population):
-#         fam.add(deoxyribonucleic_acid.random_ball())
-#     print(fam.tribalism(10)[0].balls)

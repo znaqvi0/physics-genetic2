@@ -62,18 +62,15 @@ m = 0.045
 
 initial_population = 10000
 population = 500
-num_families = 50
+num_families = 100
 
 sigma = 0.15  # sigma should be different for launch angle if using angle
-# 0.5: 0.93 avg dist, 1: 1.01 avg
-# test w/ 1000 varied copies of best ball after convergence, sigma=0.1
+sigma_rate = 0.8
 
 generation = 1
 
 best_ball = Ball(Vec(), 0, 0, 1, 1)
 
-test_family = Family(population, sigma)
-# families = [test_family]
 families = []
 
 
@@ -96,9 +93,7 @@ def all_families_done(families):
     return True
 
 
-# for i in range(num_families):
-#     families.append(Family(population // num_families, sigma))
-families.append(Family(population, sigma))
+families.append(Family(population, sigma, sigma_rate))
 for family in families:  # only one family
     for i in range(initial_population):
         family.add(random_ball())
@@ -134,14 +129,20 @@ while __name__ == "__main__":
             print([fam.family_score for fam in families])
 
             if generation == 3:
-                families = families[0].tribalism(num_families)
+                families = families[0].tribalism(num_families, 0.2)
 
-            if len(families) > 1 and families[0].sigma < 0.02:
+            if len(families) > 1 and families[0].sigma < 0.005:
                 if generation % 1 == 0:  # kill off a family every _ generations (originally % 5 then 2)
                     families.remove(families[-1])
+                    if len(families) > num_families // 5:
+                        for i in range(2):
+                            families.remove(families[-1])
 
                     for family in families:
                         family.population = population // len(families)
+
+            if len(families) == 1 and not families[0].last_family:
+                families[0].last_family = True
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
             # sigma *= 0.9  # this will eventually family-dependent, just for display purposes
