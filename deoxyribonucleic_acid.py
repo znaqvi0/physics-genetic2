@@ -58,6 +58,7 @@ def draw_course():
                                         y0 - field.right_moat.top * scale,
                                         (field.right_moat.right - field.right_moat.left) * scale,
                                         (field.right_moat.top - field.right_moat.bottom) * scale))
+    # TODO draw_rect function
 
 
 # constants
@@ -65,23 +66,16 @@ pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
-initial_population = 10000
-population = 1000
+initial_population = 20000
+population = 500
 
-sigma = 1  # TODO check avg distance for 1 and 0.5 at sigma = 0.1
-# 0.5: 0.93 avg dist, 1: 1.01 avg
-# test w/ 1000 varied copies of best ball after convergence, sigma=0.1
-
-angle_variation = 2
-speed_variation = 0.5
+sigma = 0.1
 
 generation = 1
 
 best_ball = Ball(Vec(), 0, 0, 1, 1)
 
-num_families = 10
-test_family = Family(population, sigma)
-# families = [test_family]
+num_families = 100
 families = []
 
 
@@ -104,29 +98,12 @@ def all_families_done(families):
     return True
 
 
-def attack_of_the_gaussian_clones(landed_balls):
-    landed_balls = sorted(landed_balls, key=lambda x: x.fitness, reverse=True)
-
-    avg_distance = sum(ball.distance_from_hole() for ball in landed_balls)/len(landed_balls)
-    print(avg_distance)
-
-    landed_balls = landed_balls[0:population // 10]  # // 50
-    global best_ball
-    best_ball = landed_balls[0]
-    new_balls = []
-    for ball in landed_balls:
-        for j in range((population if generation >= 1 else initial_population) // len(landed_balls)):
-            new_balls.append(ball.varied_copy_gaussian(sigma))
-    return new_balls
-
-
 for i in range(num_families):
-    families.append(Family(population // num_families, 1))
+    families.append(Family(population // num_families, sigma))
 for family in families:
     for i in range(initial_population // num_families):
         family.add(random_ball())
-# for i in range(population):
-#     families[0].add(random_ball())
+
 draw_course()
 running = False
 t = 0
@@ -156,15 +133,19 @@ while True:
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if len(families) > 1:
-                if generation % 10 == 0:  # kill off a family every _ generations
+            if len(families) > 1 and families[0].sigma < 0.005:
+                if generation % 1 == 0:  # kill off a family every _ generations
                     families.remove(families[-1])
+
+                    if len(families) > num_families // 5:
+                        for i in range(2):
+                            families.remove(families[-1])
 
                     for family in families:
                         family.population = population // len(families)
 
             best_ball = sorted(families, key=lambda fam: fam.best_ball.fitness, reverse=True)[0].best_ball
-            sigma *= 0.8  # this will eventually family-dependent, just for display purposes
+            # sigma *= 0.8  # this will eventually family-dependent, just for display purposes
             for family in families:
                 family.balls = family.next_gen()
 
@@ -174,12 +155,12 @@ while True:
             if best_ball is not None:
                 generation += 1
 
-                draw_text("launch angle: %.5f degrees" % best_ball.launch_angle, (20, 20))
-                draw_text("launch speed: %.5f m/s" % best_ball.launch_speed, (20, 40))
-                draw_text("sigma: %.5f" % sigma, (20, 60))
-                draw_text("fitness: %.5f" % best_ball.fitness, (20, 80))
-                draw_text("generation: %.0i" % generation, (20, 100))
-                draw_text("best family score: %.5f" % families[0].family_score, (20, 120))  # check
+                draw_text(best_ball.__repr__(), (20, 20))
+                draw_text("sigma: %.5f" % families[0].sigma, (20, 40))
+                draw_text("fitness: %.5f" % best_ball.fitness, (20, 60))
+                draw_text("generation: %.0i" % generation, (20, 80))
+                draw_text("best family score: %.5f" % families[0].family_score, (20, 100))
+                draw_text("number of families: %.0i" % len(families), (20, 120))
 
     p.display.flip()
     p.time.Clock().tick(100)  # caps frame rate at 100
