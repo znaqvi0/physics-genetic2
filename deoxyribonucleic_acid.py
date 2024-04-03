@@ -43,22 +43,19 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
     screen.blit(display, display_rect)
 
 
+def draw_rect(color, left_x, top_y, width, height):
+    p.draw.rect(screen, color, (x0 + left_x * scale, y0 - top_y * scale, width * scale, height * scale))
+
+
 def draw_course():
-    p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
-                                       y0 - field.TOP_WALL * scale,
-                                       (field.RIGHT_WALL - field.LEFT_WALL) * scale,
-                                       (field.TOP_WALL - field.BOTTOM_WALL) * scale))
+    draw_rect((0, 200, 50), field.LEFT_WALL, field.TOP_WALL, field.WIDTH, field.HEIGHT)
+
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
 
-    p.draw.rect(screen, (0, 150, 200), (x0 + field.left_moat.left * scale,
-                                      y0 - field.left_moat.top * scale,
-                                      (field.left_moat.right - field.left_moat.left) * scale,
-                                      (field.left_moat.top - field.left_moat.bottom) * scale))
-    p.draw.rect(screen, (0, 150, 200), (x0 + field.right_moat.left * scale,
-                                        y0 - field.right_moat.top * scale,
-                                        (field.right_moat.right - field.right_moat.left) * scale,
-                                        (field.right_moat.top - field.right_moat.bottom) * scale))
-    # TODO draw_rect function
+    left_moat = field.left_moat
+    right_moat = field.right_moat
+    draw_rect((0, 150, 200), left_moat.left, left_moat.top, left_moat.width, left_moat.height)
+    draw_rect((0, 150, 200), right_moat.left, right_moat.top, right_moat.width, right_moat.height)
 
 
 # constants
@@ -67,7 +64,7 @@ r = 0.021335
 m = 0.045
 
 initial_population = 20000
-population = 500
+population = 1000
 
 sigma = 0.1
 
@@ -75,7 +72,7 @@ generation = 1
 
 best_ball = Ball(Vec(), 0, 0, 1, 1)
 
-num_families = 100
+num_families = 200
 families = []
 
 
