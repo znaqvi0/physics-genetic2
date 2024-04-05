@@ -30,12 +30,6 @@ class Ball:
     def __repr__(self):
         return f"{self.v0}"
 
-    def varied_copy(self, angle_variation, speed_variation):
-        return Ball(self.pos0,
-                    self.launch_speed + random.uniform(-speed_variation, speed_variation),
-                    self.launch_angle + random.uniform(-angle_variation, angle_variation),
-                    self.r, self.m, self.color)
-
     def varied_copy_gaussian(self, sigma):
         ball = Ball(self.pos0,
                     random.gauss(self.launch_speed, sigma),
@@ -64,6 +58,7 @@ class Ball:
         force = Vec()
         distance_to_hill = mag(self.pos - field.hill_pos)
         distance_to_valley = mag(self.pos - field.valley_pos)
+
         if distance_to_hill < field.hill_valley_radius/2.0:  # inner
             force = 0.2 * distance_to_hill * norm(self.pos - field.hill_pos)
         elif distance_to_hill < field.hill_valley_radius:  # outer
@@ -73,6 +68,7 @@ class Ball:
             force = -0.2 * distance_to_valley * norm(self.pos - field.valley_pos)
         elif distance_to_valley < field.hill_valley_radius:  # outer
             force = -0.05/distance_to_valley * norm(self.pos - field.valley_pos)
+
         return force
 
     def force(self):
@@ -106,7 +102,5 @@ class Ball:
                 self.fitness = self.calculate_fitness()
                 string = ""
                 string += str(self.fitness)
-                # string += f"launch angle: %.5f " % self.launch_angle
-                # string += f", launch speed: {round(self.launch_speed, 5)}"
                 # print(string)
             self.done = True
