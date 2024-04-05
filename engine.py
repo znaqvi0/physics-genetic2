@@ -30,14 +30,7 @@ class Ball:
         self.fitness = 0
 
     def __repr__(self):
-        # return f"ball\n\tpos = {self.pos}\n\tvel = {self.v}\n\tacc = {self.a}"
         return f"v0={self.v0}"
-
-    def varied_copy(self, angle_variation, speed_variation):
-        return Ball(self.pos0,
-                    self.launch_speed + random.uniform(-speed_variation, speed_variation),
-                    self.launch_angle + random.uniform(-angle_variation, angle_variation),
-                    self.r, self.m, self.color)
 
     def varied_copy_gaussian(self, sigma):
         ball = Ball(self.pos0,
@@ -87,8 +80,6 @@ class Ball:
         elif self.pos.y > field.TOP_WALL:
             self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
 
-        # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
-        # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
         if self.pos.y < field.wall_top.y:
             if self.pos.x > field.wall.x > (self.pos + self.v * dt).x:
                 self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())
@@ -105,7 +96,5 @@ class Ball:
                 self.fitness = self.calculate_fitness()
                 string = ""
                 string += str(self.fitness)
-                # string += f"launch angle: %.5f " % self.launch_angle
-                # string += f", launch speed: {round(self.launch_speed, 5)}"
                 # print(string)
             self.done = True
