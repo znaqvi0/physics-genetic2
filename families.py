@@ -53,10 +53,11 @@ class Family:
 
         success_balls = [ball for ball in self.balls if ball.distance_from_hole() == 0.0]
         # include all successful balls at minimum clamp b/w pop//5 and pop//2
-        if not self.last_family:
-            num_balls_to_reproduce = max(self.population // 5, min(len(success_balls), self.population//2))
-        else:
-            num_balls_to_reproduce = self.population // 5
+        # if not self.last_family:
+        #     num_balls_to_reproduce = max(self.population // 5, min(len(success_balls), self.population//2))
+        # else:
+        #     num_balls_to_reproduce = self.population // 5
+        num_balls_to_reproduce = self.population // 5
 
         self.balls = self.balls[0:max(num_balls_to_reproduce, 1)]
         self.best_ball = self.balls[0]
