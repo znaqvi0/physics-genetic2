@@ -19,7 +19,8 @@ screen.fill(screen_color)
 p.display.set_caption('window')
 
 scale = 75  # 200
-origin = x0, y0 = WIDTH / 2, HEIGHT - (field.TOP_WALL - field.BOTTOM_WALL) * scale / 2  # This is the new origin
+# origin = x0, y0 = WIDTH / 2, HEIGHT - (field.TOP_WALL - field.BOTTOM_WALL) * scale / 2  # This is the new origin
+origin = x0, y0 = WIDTH / 2, HEIGHT / 2  # This is the new origin
 
 
 def ball_xy(ball):
@@ -45,14 +46,18 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
 
 def draw_course():
     screen.fill(screen_color)
-    p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
-                                       y0 - field.TOP_WALL * scale,
-                                       (field.RIGHT_WALL - field.LEFT_WALL) * scale,
-                                       (field.TOP_WALL - field.BOTTOM_WALL) * scale))
+    # p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
+    #                                    y0 - field.TOP_WALL * scale,
+    #                                    (field.RIGHT_WALL - field.LEFT_WALL) * scale,
+    #                                    (field.TOP_WALL - field.BOTTOM_WALL) * scale))
+    draw_ball(Ball(field.CENTER, 0, 0, field.RADIUS, 1, color=(0, 200, 50)))
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
     p.draw.line(screen, (0, 0, 0),
                 (x0 + field.wall.x * scale, y0 - field.wall.p1.y * scale),
                 (x0 + field.wall.x * scale, y0 - field.wall.p2.y * scale))
+    p.draw.line(screen, (0, 0, 0),
+                (x0 + field.horizontal_wall.p1.x * scale, y0 - field.horizontal_wall.p1.y * scale),
+                (x0 + field.horizontal_wall.p2.x * scale, y0 - field.horizontal_wall.p2.y * scale))
 
 
 # constants
@@ -60,9 +65,9 @@ pos0 = field.BALL_POS0
 r = 0.021335
 m = 0.045
 
-initial_population = 10000
+initial_population = 1000
 population = 500
-num_families = 100
+num_families = 1
 
 sigma = 0.15  # sigma should be different for launch angle if using angle
 sigma_rate = 0.8

@@ -78,22 +78,32 @@ class Ball:
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
 
     def check_walls(self):
-        if self.pos.x < field.LEFT_WALL:
-            self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
-        elif self.pos.x > field.RIGHT_WALL:
-            self.collide_with_wall(field.RIGHT_WALL_NORM, field.WALL_RANDOMNESS())
-        if self.pos.y < field.BOTTOM_WALL:
-            self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
-        elif self.pos.y > field.TOP_WALL:
-            self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
-
-        # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
-        # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
-        if self.pos.y < field.wall_top.y:
+        # if self.pos.x < field.LEFT_WALL:
+        #     self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
+        # elif self.pos.x > field.RIGHT_WALL:
+        #     self.collide_with_wall(field.RIGHT_WALL_NORM, field.WALL_RANDOMNESS())
+        # if self.pos.y < field.BOTTOM_WALL:
+        #     self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
+        # elif self.pos.y > field.TOP_WALL:
+        #     self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
+        #
+        # # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
+        # # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
+        if self.pos.y < field.wall_top.y:  # middle wall
             if self.pos.x > field.wall.x > (self.pos + self.v * dt).x:
                 self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())
             elif self.pos.x < field.wall.x < (self.pos + self.v * dt).x:
                 self.collide_with_wall(Vec(-1, 0), field.WALL_RANDOMNESS())
+
+        if field.horizontal_wall.p1.x < self.pos.x < field.horizontal_wall.p2.x:
+            if self.pos.y > field.horizontal_wall.y > (self.pos + self.v * dt).y:
+                self.collide_with_wall(Vec(0, 1), field.WALL_RANDOMNESS())
+            elif self.pos.y < field.horizontal_wall.y < (self.pos + self.v * dt).y:
+                self.collide_with_wall(Vec(0, -1), field.WALL_RANDOMNESS())
+
+        if mag(self.pos - field.CENTER) > field.RADIUS:  # outer circular wall
+            wall_norm = -norm(self.pos - field.CENTER)
+            self.collide_with_wall(wall_norm, field.WALL_RANDOMNESS())
 
     def update(self):
         if mag(self.v) > 0.005 and not self.in_hole():

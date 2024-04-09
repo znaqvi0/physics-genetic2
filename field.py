@@ -2,23 +2,12 @@ import random
 
 from vectors import *
 
-WIDTH = 3
-HEIGHT = 6
 hole_radius = 0.05
 
-LEFT_WALL = 0
-RIGHT_WALL = WIDTH
-BOTTOM_WALL = 0
-TOP_WALL = HEIGHT
-MIDDLE = 1.5
-
-HOLE_POS = Vec(LEFT_WALL + 1, BOTTOM_WALL + 0.5)
-BALL_POS0 = Vec(LEFT_WALL + 2, BOTTOM_WALL + 0.5)
-
-LEFT_WALL_NORM = Vec(1, 0)
-RIGHT_WALL_NORM = Vec(-1, 0)
-TOP_WALL_NORM = Vec(0, -1)
-BOTTOM_WALL_NORM = Vec(0, 1)
+CENTER = Vec(0, 0)
+RADIUS = 3
+HOLE_POS = CENTER + Vec(0.5, 0.5)
+BALL_POS0 = CENTER + Vec(-0.5, -2.5)
 
 WALL_RANDOMNESS = lambda: random.gauss(0, 0.1)
 
@@ -28,8 +17,11 @@ class Wall:
         self.p1 = p1
         self.p2 = p2
         self.x = self.p1.x
+        self.y = self.p1.y
 
 
-wall_bottom = Vec(MIDDLE, 0)
-wall_top = Vec(MIDDLE, 3)
+wall_bottom = CENTER + Vec(0, -RADIUS)
+wall_top = CENTER + Vec(0, RADIUS/3)
 wall = Wall(wall_bottom, wall_top)
+
+horizontal_wall = Wall(wall.p2, wall.p2 + Vec(1.2, 0))
