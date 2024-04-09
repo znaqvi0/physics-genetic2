@@ -21,7 +21,7 @@ class Wall:
 
 
 wall_bottom = CENTER + Vec(0, -RADIUS)
-wall_top = CENTER + Vec(0, RADIUS/3)
+wall_top = CENTER + Vec(0, 1)
 wall = Wall(wall_bottom, wall_top)
 
-horizontal_wall = Wall(wall.p2, wall.p2 + Vec(1.2, 0))
+horizontal_wall = Wall(wall.p2, wall.p2 + Vec(1, 0))

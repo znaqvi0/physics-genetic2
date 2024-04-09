@@ -46,10 +46,7 @@ def draw_text(text, top_left, text_color=(255, 255, 255)):
 
 def draw_course():
     screen.fill(screen_color)
-    # p.draw.rect(screen, (0, 200, 50), (x0 + field.LEFT_WALL * scale,
-    #                                    y0 - field.TOP_WALL * scale,
-    #                                    (field.RIGHT_WALL - field.LEFT_WALL) * scale,
-    #                                    (field.TOP_WALL - field.BOTTOM_WALL) * scale))
+
     draw_ball(Ball(field.CENTER, 0, 0, field.RADIUS, 1, color=(0, 200, 50)))
     draw_ball(Ball(field.HOLE_POS, 0, 0, 0.05, 1, color=(255, 255, 255)))
     p.draw.line(screen, (0, 0, 0),
@@ -107,7 +104,7 @@ draw_course()
 running = False
 sub_families_created = False
 t = 0
-# TODO apply a better filter to divide families?
+
 while __name__ == "__main__":
     for event in p.event.get():
         if event.type == p.QUIT:  # this refers to clicking on the "x"-close
