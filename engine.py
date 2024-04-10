@@ -74,21 +74,11 @@ class Ball:
 
     def collide_with_wall(self, wall_norm, sigma):
         randomized_wall_norm = wall_norm.rotate(random.gauss(0, sigma), degrees=True)
+        self.pos -= self.v * dt
         self.v -= (2 * self.v.dot(wall_norm) * randomized_wall_norm)
         self.v *= 1 - 0.2 * abs(norm(self.v).dot(randomized_wall_norm))
 
     def check_walls(self):
-        # if self.pos.x < field.LEFT_WALL:
-        #     self.collide_with_wall(field.LEFT_WALL_NORM, field.WALL_RANDOMNESS())
-        # elif self.pos.x > field.RIGHT_WALL:
-        #     self.collide_with_wall(field.RIGHT_WALL_NORM, field.WALL_RANDOMNESS())
-        # if self.pos.y < field.BOTTOM_WALL:
-        #     self.collide_with_wall(field.BOTTOM_WALL_NORM, field.WALL_RANDOMNESS())
-        # elif self.pos.y > field.TOP_WALL:
-        #     self.collide_with_wall(field.TOP_WALL_NORM, field.WALL_RANDOMNESS())
-        #
-        # # if self.pos.x > field.wall.p1.x and ((self.pos + self.v) * dt).x < field.wall.p1.x:
-        # # if field.wall_bottom.y < self.pos.y < field.wall_top.y:
         if self.pos.y < field.wall_top.y:  # middle wall
             if self.pos.x > field.wall.x > (self.pos + self.v * dt).x:
                 self.collide_with_wall(Vec(1, 0), field.WALL_RANDOMNESS())

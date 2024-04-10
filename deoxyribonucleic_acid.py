@@ -64,9 +64,9 @@ m = 0.045
 
 initial_population = 1000
 population = 500
-num_families = 1
+num_families = 20
 
-sigma = 0.15  # sigma should be different for launch angle if using angle
+sigma = 2
 sigma_rate = 0.8
 
 generation = 1
@@ -95,10 +95,12 @@ def all_families_done(families):
     return True
 
 
-families.append(Family(population, sigma, sigma_rate))
-for family in families:  # only one family
-    for i in range(initial_population):
-        family.add(random_ball())
+# families.append(Family(population, sigma, sigma_rate))
+# for family in families:  # only one family
+#     for i in range(initial_population):
+#         family.add(random_ball())
+for i in range(num_families):
+    families.append(Family(population//num_families, sigma, sigma_rate).populate(seed=random_ball()))
 
 draw_course()
 running = False
@@ -130,15 +132,9 @@ while __name__ == "__main__":
             families = sorted(families, key=lambda fam: fam.family_score, reverse=True)
             print([fam.family_score for fam in families])
 
-            if generation == 3:
-                families = families[0].tribalism(num_families, 0.2)
-
-            if len(families) > 1 and families[0].sigma < 0.005:
+            if len(families) > 1 and families[0].sigma < 0.0005:
                 if generation % 1 == 0:  # kill off a family every _ generations (originally % 5 then 2)
                     families.remove(families[-1])
-                    if len(families) > num_families // 5:
-                        for i in range(2):
-                            families.remove(families[-1])
 
                     for family in families:
                         family.population = population // len(families)

@@ -14,6 +14,11 @@ class Family:
         self.last_family = False
         self.sigma_rate = sigma_rate
 
+    def populate(self, seed):
+        for i in range(self.population):
+            self.add(seed.varied_copy_gaussian(self.sigma))
+        return self
+
     def add(self, ball):
         self.balls.append(ball)
 
