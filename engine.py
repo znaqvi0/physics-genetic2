@@ -11,9 +11,7 @@ class Ball:
         self.v = Vec(math.cos(math.radians(launch_angle)),
                      math.sin(math.radians(launch_angle)),
                      0) * launch_speed
-        self.v0 = Vec(math.cos(math.radians(launch_angle)),
-                      math.sin(math.radians(launch_angle)),
-                      0) * launch_speed
+        self.v0 = self.v.copy()
         self.pos = position
         self.pos0 = position
         self.a = Vec()
@@ -30,14 +28,7 @@ class Ball:
         self.fitness = 0
 
     def __repr__(self):
-        # return f"ball\n\tpos = {self.pos}\n\tvel = {self.v}\n\tacc = {self.a}"
         return f"v0={self.v0}"
-
-    def varied_copy(self, angle_variation, speed_variation):
-        return Ball(self.pos0,
-                    self.launch_speed + random.uniform(-speed_variation, speed_variation),
-                    self.launch_angle + random.uniform(-angle_variation, angle_variation),
-                    self.r, self.m, self.color)
 
     def varied_copy_gaussian(self, sigma):
         ball = Ball(self.pos0,
@@ -105,7 +96,5 @@ class Ball:
                 self.fitness = self.calculate_fitness()
                 string = ""
                 string += str(self.fitness)
-                # string += f"launch angle: %.5f " % self.launch_angle
-                # string += f", launch speed: {round(self.launch_speed, 5)}"
                 # print(string)
             self.done = True

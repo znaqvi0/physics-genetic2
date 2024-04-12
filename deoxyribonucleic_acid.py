@@ -95,10 +95,6 @@ def all_families_done(families):
     return True
 
 
-# families.append(Family(population, sigma, sigma_rate))
-# for family in families:  # only one family
-#     for i in range(initial_population):
-#         family.add(random_ball())
 for i in range(num_families):
     families.append(Family(population//num_families, sigma, sigma_rate).populate(seed=random_ball()))
 
