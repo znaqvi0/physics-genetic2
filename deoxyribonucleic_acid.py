@@ -157,4 +157,4 @@ while __name__ == "__main__":
                 draw_text("number of families: %.0i" % len(families), (20, 140))
 
     p.display.flip()
-    p.time.Clock().tick(100)  # caps frame rate at 100
+    p.time.Clock().tick()  # caps frame rate at 100
